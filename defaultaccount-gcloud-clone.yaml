@@ -44,7 +44,7 @@ steps:
   - repos
   - clone
   - ${_REPO_NAME}
-  -- project
+  - -- project
   - ${_ORIGIN_PROJECT_ID}
 
 # Content
