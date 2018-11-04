@@ -1,0 +1,68 @@
+steps:
+# Configure gcloud for this project and print config list
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - config
+  - set
+  - core/disable_prompts
+  - 'True'
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - config
+  - set
+  - core/project
+  - ${_MONITOR_PROJECT_ID}
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - config
+  - list
+
+# Print the environment variables of the build container
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: bash
+  args:
+  - -c
+  - "printenv"
+
+# Print the repository path to console (via Python 2.7)
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: python2.7
+  args:
+  - -c
+  - "print(u'Checkout: {url}'.format(url='https://source.developers.google.com/projects/${_ORIGIN_PROJECT_ID}/repos/${_REPO_NAME}/moveable-aliases/${_BRANCH_NAME}/paths/'));"
+
+# Start setup of T9N by sending GET request to API of application
+#- name: gcr.io/cloud-builders/curl
+#  args: ['https://$TAG_NAME-dot-$PROJECT_ID.appspot.com/_tasks/dca/setup/update_t9n?version=$TAG_NAME', '--output', 'localfile.zip']
+
+# Clone the repository (for Cloud Source Repositories that's easier than for external (private) Git repositories using gcr.io/cloud-builders/git due to auth)
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - source
+  - repos
+  - clone
+  - ${_REPO_NAME}
+  -- project
+  - ${_ORIGIN_PROJECT_ID}
+
+# Content
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: bash
+  args:
+  - -c
+  - "ls -la /workspace/${_REPO_NAME}/"
+
+# Content
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: bash
+  args:
+  - -c
+  - "cd /workspace/${_REPO_NAME}/\ngit branch -r"
+
+timeout: 3600s
+substitutions: # default values, see https://cloud.google.com/container-builder/docs/configuring-builds/substitute-variable-values
+  _BRANCH_NAME: master
+  _ORIGIN_PROJECT_ID: dummy
+  _MONITOR_PROJECT_ID: monitor
