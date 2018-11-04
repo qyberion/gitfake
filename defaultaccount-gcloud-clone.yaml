@@ -63,5 +63,6 @@ steps:
 timeout: 3600s
 substitutions: # default values, see https://cloud.google.com/container-builder/docs/configuring-builds/substitute-variable-values
   _BRANCH_NAME: master
+  _REPO_NAME: github-mirror
   _ORIGIN_PROJECT_ID: dummy
   _MONITOR_PROJECT_ID: monitor
