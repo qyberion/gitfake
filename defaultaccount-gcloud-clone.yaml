@@ -44,8 +44,7 @@ steps:
   - repos
   - clone
   - ${_REPO_NAME}
-  - -- project
-  - ${_ORIGIN_PROJECT_ID}
+  - -- project ${_ORIGIN_PROJECT_ID}
 
 # Content
 - name: 'gcr.io/cloud-builders/gcloud'
