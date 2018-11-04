@@ -1,0 +1,2 @@
+# gitfake
+Useless fake project
